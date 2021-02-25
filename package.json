@@ -1,0 +1,28 @@
+{
+  "name": "api-alusi-app",
+  "version": "1.0.0",
+  "description": "Project service API untuk food app bernama Alusi",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "expressjs",
+    "Nodejs",
+    "mongodb",
+    "api"
+  ],
+  "author": "Ridar",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.15",
+    "ol-mongoose-random": "0.0.4"
+  }
+}
