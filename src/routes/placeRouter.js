@@ -5,6 +5,8 @@ const placeController = require('../controllers/placeController');
 
 //LIST ROUTER
 router.get('/:id', placeController.index);
-router.post('/', placeController.store);
+router.route('/')
+    .post(placeController.store)
+    .get(placeController.search);
 
 module.exports = router;

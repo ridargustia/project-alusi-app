@@ -43,5 +43,35 @@ module.exports = {
         } catch (error) {
             res.status(400).json({message: error});
         }
+    },
+    search: async (req, res) => {
+        if (req.query.keyword) {
+            const keyword = {name: {$regex: new RegExp(req.query.keyword, "i")}};
+            try {
+                const places = await Place.find(keyword);
+                if (places.length == 0) return res.status(400).json({message: 'Place not found.'});
+                res.status(200).json({
+                    success: true,
+                    message:'Request is successful.',
+                    data: places
+                });
+            } catch (error) {
+                res.status(400).json({message: error});
+            }
+        } else {
+            await Place.randomInit()
+                .conditions()
+                .options({limit: 3})
+                .exec()
+                .then(places => {
+                    if (places.length == 0) return res.status(400).json({message: 'Place not found.'});
+                    res.status(200).json({
+                        success: true,
+                        message:'Request is successful.',
+                        data: places
+                    });
+                })
+                .catch(error => res.status(400).json({message: error}));
+        }
     }
 };
