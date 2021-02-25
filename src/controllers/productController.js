@@ -38,5 +38,35 @@ module.exports = {
        } catch (error) {
            res.status(400).json({message: error});
        }
+    },
+    search: async (req, res) => {
+        if (req.query.keyword) {
+            const keyword = {name: {$regex: new RegExp(req.query.keyword, "i")}};
+            try {
+                const products = await Product.find(keyword);
+                if (products.length == 0) return res.status(400).json({message: 'Product not found.'});
+                res.status(200).json({
+                    success: true,
+                    message:'Request is successful.',
+                    data: products
+                });
+            } catch (error) {
+                res.status(400).json({message: error});
+            }
+        } else {
+            await Product.randomInit()
+                .conditions()
+                .options({limit: 3})
+                .exec()
+                .then(products => {
+                    if (products.length == 0) return res.status(400).json({message: 'Product not found.'});
+                    res.status(200).json({
+                        success: true,
+                        message:'Request is successful.',
+                        data: products
+                    });
+                })
+                .catch(error => res.status(400).json({message: error}));
+        }
     }
 };
