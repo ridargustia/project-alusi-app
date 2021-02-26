@@ -8,5 +8,6 @@ router.get('/:id', placeController.index);
 router.route('/')
     .post(placeController.store)
     .get(placeController.search);
+router.get('/:id/detail', placeController.show);
 
 module.exports = router;

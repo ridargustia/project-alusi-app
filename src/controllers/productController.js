@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Place = require('../models/Place');
 
 module.exports = {
     index: async (req, res) => {
@@ -30,6 +31,9 @@ module.exports = {
 
        try {
            const savedProduct = await product.save();
+           const place = await Place.findById(savedProduct.place_id);
+           place.products.push(savedProduct._id);
+           await place.save();
             res.status(201).json({
                 success: true,
                 message: 'Created is successful',

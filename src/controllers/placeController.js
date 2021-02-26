@@ -73,5 +73,17 @@ module.exports = {
                 })
                 .catch(error => res.status(400).json({message: error}));
         }
+    },
+    show: async (req, res) => {
+        try {
+            const place = await Place.findById(req.params.id).populate('products');
+            res.status(200).json({
+                success: true,
+                message: 'Request is successful',
+                data: place
+            });
+        } catch (error) {
+            res.status(400).json({message: error});
+        }
     }
 };
