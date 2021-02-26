@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 const Place = require('../models/Place');
 
 module.exports = {
-    index: async (req, res) => {
+    index: async (req, res) => {                //Page dashboard utama dan dashboard per kategori
         await Product.randomInit()
             .conditions({category_id: req.params.id})
             .options({limit: 5})
@@ -18,7 +18,7 @@ module.exports = {
             .catch(error => res.status(400).json({message: error}));
             
     },
-    store: async (req, res) => {
+    store: async (req, res) => {                //Page add product
        const product = new Product({
             place_id: req.body.place_id,
             category_id: req.body.category_id,
@@ -43,7 +43,7 @@ module.exports = {
            res.status(400).json({message: error});
        }
     },
-    search: async (req, res) => {
+    search: async (req, res) => {                   //Page Search Products
         if (req.query.keyword) {
             const keyword = {name: {$regex: new RegExp(req.query.keyword, "i")}};
             try {
@@ -73,7 +73,7 @@ module.exports = {
                 .catch(error => res.status(400).json({message: error}));
         }
     },
-    show: async (req, res) => {
+    show: async (req, res) => {             //Page product detail
         try {
             const product = await Product.findById(req.params.id).populate('subcategory_id place_id');
             const otherProducts = await Product.find({place_id: product.place_id, _id: {$nin: product._id }});
@@ -89,5 +89,35 @@ module.exports = {
             res.status(400).json({message: error});
         }
 
+    },
+    explore: async (req, res) => {                  //Page Explore products
+        try {
+            const productsRandom = await Product.randomInit()
+                .conditions()
+                .options({limit: 4})
+                .exec();
+
+            const productsNonSpot = await Product.randomInit()
+                .conditions({category_id: {$nin: "6032311b72ad4526401dd477"}})
+                .options({limit: 4})
+                .exec();
+
+            const spotRandom = await Product.randomInit()
+                .conditions({category_id: "6032311b72ad4526401dd477"})
+                .options({limit: 4})
+                .exec();
+
+            res.status(200).json({
+                success: true,
+                message: 'Request is successful.',
+                data: {
+                    productsRandom: productsRandom,
+                    productsNonSpot: productsNonSpot,
+                    spotRandom: spotRandom
+                }
+            });
+        } catch (error) {
+            res.status(400).json({message: error});
+        }
     }
 };
