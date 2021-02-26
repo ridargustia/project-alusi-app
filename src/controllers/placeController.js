@@ -2,7 +2,7 @@ const Place = require('../models/Place');
 const User = require('../models/User');
 
 module.exports = {
-    index: async (req, res) => {
+    index: async (req, res) => {                    //Page dashboard utama dan dashboard per kategori 
         await Place.randomInit()
             .conditions({category_id: req.params.id})
             .options({limit: 5})
@@ -18,7 +18,7 @@ module.exports = {
             .catch(error => res.status(400).json({message: error}));
 
     },
-    store: async (req, res) => {
+    store: async (req, res) => {                //Page add place
         const place = new Place({
             category_id: req.body.category_id,
             user_id: req.body.user_id,
@@ -44,7 +44,7 @@ module.exports = {
             res.status(400).json({message: error});
         }
     },
-    search: async (req, res) => {
+    search: async (req, res) => {           //Page Search
         if (req.query.keyword) {
             const keyword = {name: {$regex: new RegExp(req.query.keyword, "i")}};
             try {
@@ -74,7 +74,7 @@ module.exports = {
                 .catch(error => res.status(400).json({message: error}));
         }
     },
-    show: async (req, res) => {
+    show: async (req, res) => {         //Page Detail
         try {
             const place = await Place.findById(req.params.id).populate('products');
             res.status(200).json({
@@ -85,5 +85,36 @@ module.exports = {
         } catch (error) {
             res.status(400).json({message: error});
         }
+    },
+    explore: async (req, res) => {          //Page Explore
+        try {
+            const placesRandom = await Place.randomInit()
+                .conditions()
+                .options({limit: 4})
+                .exec();
+
+            const placesNonTravel = await Place.randomInit()
+                .conditions({category_id: {$nin: "6032311b72ad4526401dd477"}})
+                .options({limit: 4})
+                .exec();
+
+            const placesTravel = await Place.randomInit()
+                .conditions({category_id: "6032311b72ad4526401dd477"})
+                .options({limit: 4})
+                .exec();
+                
+            res.status(200).json({
+                success: true,
+                message: 'Request is successful.',
+                data: {
+                    placesRandom: placesRandom,
+                    placesNonTravel: placesNonTravel,
+                    placesTravel: placesTravel
+                }
+            });
+        } catch (error) {
+            res.status(400).json({message: error});
+        }
+        
     }
 };

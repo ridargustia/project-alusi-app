@@ -4,6 +4,7 @@ const placeController = require('../controllers/placeController');
 // const verify = require('../middlewares/verifyToken');
 
 //LIST ROUTER
+router.get('/explore', placeController.explore);
 router.get('/:id', placeController.index);
 router.route('/')
     .post(placeController.store)
