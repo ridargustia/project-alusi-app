@@ -10,6 +10,7 @@ const subcategoryRouter = require('./src/routes/subcategoryRouter');
 const placeRouter = require('./src/routes/placeRouter');
 const articleRouter = require('./src/routes/articleRouter');
 const productRouter = require('./src/routes/productRouter');
+const listRouter = require('./src/routes/listRouter');
 
 
 //MIDDLEWARES
@@ -29,6 +30,7 @@ app.use('/api/v1/subcategories', subcategoryRouter);
 app.use('/api/v1/places', placeRouter);
 app.use('/api/v1/articles', articleRouter);
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/lists', listRouter);
 
 //MENJALANKAN SERVER
 app.listen(config.port, () => {

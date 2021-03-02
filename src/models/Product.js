@@ -36,7 +36,10 @@ let productSchema = new Schema({
     },
     rating: {
         type: Number, default: 0
-    }
+    },
+    lists: [{
+        type: Schema.Types.ObjectId, ref: 'List'
+    }]
 }, {timestamps: true});
 
 productSchema.plugin(random);

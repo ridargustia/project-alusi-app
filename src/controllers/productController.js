@@ -1,5 +1,7 @@
 const Product = require('../models/Product');
 const Place = require('../models/Place');
+const List = require('../models/List');
+const User = require('../models/User');
 
 module.exports = {
     index: async (req, res) => {                //Page dashboard utama dan dashboard per kategori
@@ -119,5 +121,54 @@ module.exports = {
         } catch (error) {
             res.status(400).json({message: error});
         }
+    },
+    savedList: async (req, res) => {
+        //Select list berdasarkan id dari route parameter
+        const selectList = await List.findById(req.params.id);
+        //Kondisi jika method GET memiliki route query
+        if (req.query.keyword) {
+            //Deklarasi variabel dengan queries LIKE Regex
+            const keyword = {name: {$regex: new RegExp(req.query.keyword, "i")}};
+            try {
+                //Select product dengan queries LIKE dengan variabel keyword
+                const products = await Product.find(keyword);
+                //Checking bila data product kosong / null
+                if (products.length == 0) return res.status(400).json({message: 'Product not found.'});
+                //Menampilkan endpoint / response
+                res.status(200).json({
+                    success: true,
+                    message:'Request is successful.',
+                    data: {
+                        products: products,
+                        list: selectList
+                    }
+                });
+            } catch (error) {
+                //Jika terjadi error
+                res.status(400).json({message: error});
+            }
+        } else {
+            // Menampilkan data secara random dengan limit yang ditentukan
+            await Product.randomInit()
+                .conditions()
+                .options({limit: 3})
+                .exec()
+                .then(products => {
+                    //Checking bila data product kosong / null
+                    if (products.length == 0) return res.status(400).json({message: 'Product not found.'});
+                    //Menampilkan endpoint / response
+                    res.status(200).json({
+                        success: true,
+                        message:'Request is successful.',
+                        data: {
+                            products: products,
+                            list: selectList
+                        }
+                    });
+                })
+                //Jika terjadi error dengan method catch pada Promise
+                .catch(error => res.status(400).json({message: error}));
+        }
+
     }
 };
